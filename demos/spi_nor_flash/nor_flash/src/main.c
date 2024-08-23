@@ -31,6 +31,7 @@ int main(void)
 
     board_init();
     serial_nor_get_board_host(&nor_flash_dev.host);
+    board_init_spi_clock(nor_flash_dev.host.host_param.param.host_base);
     serial_nor_spi_pins_init(nor_flash_dev.host.host_param.param.host_base);
 
     memset(rbuff, 0, sizeof(rbuff));
