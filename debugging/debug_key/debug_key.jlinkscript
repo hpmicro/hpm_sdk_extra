@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
+int InitTarget() {
+    // Send AUTHEN inst
+    JLINK_JTAG_WriteIR(0xF);
+    
+    JLINK_JTAG_WriteDR(0xFFFFFFFFF, 32);
+    JLINK_JTAG_WriteDR(0xFFFFFFFFF, 32);
+    JLINK_JTAG_WriteDR(0xFFFFFFFFF, 32);
+    JLINK_JTAG_WriteDR(0xFFFFFFFFF, 32);
+
+    // feed debug key: OTP word[15-12]
+    JLINK_JTAG_WriteDR(0x1, 32); //OTP word[12]
+    JLINK_JTAG_WriteDR(0x0, 32); //OTP word[13]
+    JLINK_JTAG_WriteDR(0x0, 32); //OTP word[14]
+    JLINK_JTAG_WriteDR(0x0, 32); //OTP word[15]
+    return 0;
+}
