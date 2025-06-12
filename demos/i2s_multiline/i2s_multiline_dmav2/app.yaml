@@ -1,0 +1,4 @@
+dependency:
+  - i2s
+  - dmav2
+  - ip_feature_dmav2_burst_in_fixed_trans
