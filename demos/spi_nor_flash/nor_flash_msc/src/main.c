@@ -9,7 +9,7 @@
 #include "hpm_debug_console.h"
 #include "hpm_spi_drv.h"
 #include "hpm_clock_drv.h"
-#ifdef CONFIG_HAS_HPMSDK_DMAV2
+#ifdef HPMSOC_HAS_HPMSDK_DMAV2
 #include "hpm_dmav2_drv.h"
 #else
 #include "hpm_dma_drv.h"
@@ -21,6 +21,7 @@
 #include "hpm_csr_drv.h"
 #include "hpm_serial_nor.h"
 #include "hpm_serial_nor_host_port.h"
+#include "usb_config.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -39,6 +40,9 @@
 #define PLACE_BUFF_AT_CACHEABLE 1
 #endif
 
+#ifndef ERASE_CHIP
+#define ERASE_CHIP 0
+#endif
 extern void msc_spi_flash_init(void);
 
 hpm_serial_nor_t nor_flash_dev = {0};
@@ -48,6 +52,8 @@ int main(void)
     hpm_stat_t stat;
     hpm_serial_nor_info_t flash_info;
     board_init();
+    board_init_usb((USB_Type *)CONFIG_HPM_USBD_BASE);
+    intc_set_irq_priority(CONFIG_HPM_USBD_IRQn, 2);
     serial_nor_get_board_host(&nor_flash_dev.host);
     board_init_spi_clock(nor_flash_dev.host.host_param.param.host_base);
     serial_nor_spi_pins_init(nor_flash_dev.host.host_param.param.host_base);
@@ -65,6 +71,13 @@ int main(void)
             printf("the flash block_erase_cmd:0x%02x\n", flash_info.block_erase_cmd);
         }
         printf("spi nor flash init ok\n");
+#if ERASE_CHIP
+        if (hpm_serial_nor_erase_chip(&nor_flash_dev) == status_success) {
+            printf("chip erase ok\n");
+        } else {
+            printf("chip erase failed\n");
+        }
+#endif
         msc_spi_flash_init();
         vTaskStartScheduler();
     }
