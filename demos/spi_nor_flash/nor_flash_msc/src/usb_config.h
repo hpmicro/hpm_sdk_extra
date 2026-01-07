@@ -9,8 +9,6 @@
 
 #include "hpm_soc.h"
 
-#define CHERRYUSB_VERSION 0x001001
-
 /* ================ USB common Configuration ================ */
 
 #define CONFIG_USB_PRINTF(...) printf(__VA_ARGS__)
@@ -44,6 +42,9 @@
 
 /* attribute data into no cache ram */
 #define USB_NOCACHE_RAM_SECTION __attribute__((section(".noncacheable")))
+
+/* ================ USB Device Port Configuration ================*/
+#define CONFIG_USBDEV_MAX_BUS USB_SOC_MAX_COUNT
 
 /* ================= USB Device Stack Configuration ================ */
 
@@ -102,6 +103,14 @@
 #endif
 
 #define CONFIG_USBDEV_RNDIS_USING_LWIP
+
+#ifndef CONFIG_USBDEV_MSC_MAX_LUN
+#define CONFIG_USBDEV_MSC_MAX_LUN 1
+#endif
+
+#ifndef CONFIG_USBDEV_MSC_MAX_BUFSIZE
+#define CONFIG_USBDEV_MSC_MAX_BUFSIZE 4096
+#endif
 
 /* ================ USB HOST Stack Configuration ================== */
 
